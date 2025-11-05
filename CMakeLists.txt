@@ -4,30 +4,41 @@ project(FluentUIDock VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(KDDockWidgets_QT6 ON)
+set(KDDockWidgets_STATIC ON)
+set(KDDockWidgets_EXAMPLES OFF)
+
+set(FLUENTUI_QML_PLUGIN_DIRECTORY ${CMAKE_SOURCE_DIR}/imports)
 set(QT_QML_OUTPUT_DIRECTORY ${FLUENTUI_QML_PLUGIN_DIRECTORY})
 
-find_package(Qt6 COMPONENTS Quick QuickControls2 REQUIRED)
-qt_standard_project_setup(REQUIRES ${QT_VERSION_REQUIRED})
-
 if (FLUENTUI_BUILD_STATIC_LIB)
+    set(FLUENTUI_LIB_TYPE "STATIC")
     set(PLUGIN_TARGET_NAME "")
 else ()
+    set(FLUENTUI_LIB_TYPE "SHARED")
     set(PLUGIN_TARGET_NAME ${PROJECT_NAME})
 endif ()
+
+find_package(Qt6 COMPONENTS Quick QuickPrivate Widgets WidgetsPrivate QuickControls2 REQUIRED)
+qt_standard_project_setup(REQUIRES ${QT_VERSION_REQUIRED})
 
 qt_add_library(${PROJECT_NAME} ${FLUENTUI_LIB_TYPE})
 
 set(QML_FILES
-
+    DockingArea.qml
+    DockWidget.qml
+    MyTitleBar.qml
+    MySeparator.qml
+    MyDockWidget.qml
 )
 
 set(SOURCE_FILES
     stdafx.h
-   
+    FluentUIDock.h FluentUIDock.cpp
 )
 
 qt_add_qml_module(${PROJECT_NAME}
-    URI "FluentUI.Dock"
+    URI "FluentUIDock"
     VERSION "${PROJECT_VERSION}"
     DESIGNER_SUPPORTED
     PLUGIN_TARGET ${PLUGIN_TARGET_NAME}
@@ -41,13 +52,6 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     QT_MESSAGELOGCONTEXT
     HAVE_CONFIG_H
 )
-
-if (APPLE)
-    target_link_libraries(${PROJECT_NAME} PRIVATE
-        "-framework Foundation"
-        "-framework Cocoa"
-    )
-endif ()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
@@ -70,7 +74,26 @@ target_link_options(${PROJECT_NAME} PRIVATE
 )
 endif()
 
+
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Quick
+    Qt6::QuickPrivate
+    Qt6::Widgets
+    Qt6::WidgetsPrivate
     Qt6::QuickControls2
+    FluentUI
+    FluentUIImpl
+    FluentUIControls
+    KDAB::kddockwidgets
 )
+
+if (FLUENTUI_BUILD_STATIC_LIB)
+    target_link_libraries(
+        ${PROJECT_NAME} PRIVATE
+        FluentUIplugin
+        FluentUIImplplugin
+        FluentUIControlsplugin
+    )
+endif()
+
+add_subdirectory(KDDockWidgets)
