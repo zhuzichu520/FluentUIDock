@@ -19,7 +19,8 @@ else ()
     set(PLUGIN_TARGET_NAME ${PROJECT_NAME})
 endif ()
 
-find_package(Qt6 COMPONENTS Quick QuickPrivate Widgets WidgetsPrivate QuickControls2 REQUIRED)
+find_package(Qt6 COMPONENTS Quick Widgets QuickControls2 REQUIRED)
+find_package(Qt6 OPTIONAL_COMPONENTS QuickPrivate WidgetsPrivate)
 qt_standard_project_setup(REQUIRES ${QT_VERSION_REQUIRED})
 
 qt_add_library(${PROJECT_NAME} ${FLUENTUI_LIB_TYPE})
@@ -27,9 +28,11 @@ qt_add_library(${PROJECT_NAME} ${FLUENTUI_LIB_TYPE})
 set(QML_FILES
     DockingArea.qml
     DockWidget.qml
-    MyTitleBar.qml
-    MySeparator.qml
-    MyDockWidget.qml
+    FluentUITitleBar.qml
+    FluentUIDockWidget.qml
+    FluentUIFloatingWindow.qml
+    FluentUIGroup.qml
+    FluentUITabBar.qml
 )
 
 set(SOURCE_FILES

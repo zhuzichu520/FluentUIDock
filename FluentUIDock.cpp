@@ -17,13 +17,22 @@ class CustomViewFactory : public KDDockWidgets::QtQuick::ViewFactory
 public:
     ~CustomViewFactory() override;
     QUrl titleBarFilename() const override{
-        return QUrl("qrc:/qt/qml/FluentUIDock/MyTitleBar.qml");
-    }
-    QUrl separatorFilename() const override{
-        return QUrl("qrc:/qt/qml/FluentUIDock/MySeparator.qml");
+        return QUrl(QStringLiteral("qrc:/qt/qml/FluentUIDock/FluentUITitleBar.qml"));
     }
     QUrl dockwidgetFilename() const override{
-        return QUrl("qrc:/qt/qml/FluentUIDock/MyDockWidget.qml");
+        return QUrl(QStringLiteral("qrc:/qt/qml/FluentUIDock/FluentUIDockWidget.qml"));
+    }
+    QUrl groupFilename() const override{
+        return QUrl(QStringLiteral("qrc:/qt/qml/FluentUIDock/FluentUIGroup.qml"));
+    }
+    QUrl floatingWindowFilename() const override{
+        return QUrl(QStringLiteral("qrc:/qt/qml/FluentUIDock/FluentUIFloatingWindow.qml"));
+    }
+    QUrl tabbarFilename() const override{
+        return QUrl(QStringLiteral("qrc:/qt/qml/FluentUIDock/FluentUITabBar.qml"));
+    }
+    QUrl separatorFilename() const override{
+        return QUrl(QStringLiteral("qrc:/kddockwidgets/qtquick/views/qml/Separator.qml"));
     }
 };
 

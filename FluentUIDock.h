@@ -29,5 +29,16 @@ public:
     };
     Q_DECLARE_FLAGS(Locations, Location)
     Q_FLAG(Locations)
+    enum MainWindowOption {
+        MainWindowOption_None = KDDockWidgets::MainWindowOption::MainWindowOption_None,
+        MainWindowOption_HasCentralGroup = KDDockWidgets::MainWindowOption::MainWindowOption_HasCentralGroup,
+        MainWindowOption_HasCentralFrame = KDDockWidgets::MainWindowOption::MainWindowOption_HasCentralFrame,
+        MainWindowOption_MDI = KDDockWidgets::MainWindowOption::MainWindowOption_MDI,
+        MainWindowOption_HasCentralWidget = KDDockWidgets::MainWindowOption::MainWindowOption_HasCentralWidget,
+        MainWindowOption_QDockWidgets = KDDockWidgets::MainWindowOption::MainWindowOption_QDockWidgets,
+        MainWindowOption_ManualInit = KDDockWidgets::MainWindowOption::MainWindowOption_ManualInit
+    };
+    Q_DECLARE_FLAGS(MainWindowOptions, MainWindowOption)
+    Q_FLAG(MainWindowOptions)
     Q_INVOKABLE void init();
 };

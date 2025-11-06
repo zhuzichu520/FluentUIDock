@@ -1,0 +1,239 @@
+import QtQuick
+import QtQuick.Layouts
+import com.kdab.dockwidgets
+import "qrc:/kddockwidgets/qtquick/views/qml/" as KDDW
+
+Rectangle {
+    id: root
+
+    property QtObject groupCpp
+    readonly property QtObject titleBarCpp: groupCpp ? groupCpp.titleBar : null
+    readonly property int nonContentsHeight: (titleBar.item ? titleBar.item.heightWhenVisible : 0) + tabbar.implicitHeight + (2 * contentsMargin) + titleBarContentsMargin
+    property int contentsMargin: isMDI ? 2 : 1
+    property int titleBarContentsMargin: 1
+    property int mouseResizeMargin: 8
+    readonly property bool isMDI: groupCpp && groupCpp.isMDI
+    readonly property bool resizeAllowed: root.isMDI && !_kddwHelpers.isDragging && _kddwDockRegistry && (!_kddwHelpers.groupViewInMDIResize || _kddwHelpers.groupViewInMDIResize === groupCpp)
+    property alias tabBarHeight: tabbar.height
+    readonly property bool hasCustomMouseEventRedirector: false
+    readonly property bool isFixedHeight: groupCpp && groupCpp.isFixedHeight
+    readonly property bool isFixedWidth: groupCpp && groupCpp.isFixedWidth
+    readonly property bool tabsAtTop: !groupCpp || !groupCpp.tabsAtBottom
+
+    anchors.fill: parent
+
+    radius: 2
+    color: "transparent"
+    border {
+        color: "#b8b8b8"
+        width: 1
+    }
+
+    onGroupCppChanged: {
+        if (groupCpp) {
+            groupCpp.setStackLayout(stackLayout);
+        }
+    }
+
+    onNonContentsHeightChanged: {
+        if (groupCpp)
+            groupCpp.geometryUpdated();
+    }
+
+    MouseArea {
+        anchors.fill: parent
+
+
+        KDDW.MDIResizeHandlerHelper {
+            anchors {
+                left: parent ? parent.left : undefined
+                top: parent ? parent.top : undefined
+                bottom: parent ? parent.bottom : undefined
+            }
+
+            width: resizeMargin
+            z: 100
+            groupCpp: root.groupCpp
+            resizeAllowed: root.resizeAllowed && !root.isFixedWidth
+            resizeMargin: root.mouseResizeMargin
+            cursorPosition: KDDockWidgets.CursorPosition_Left
+        }
+
+        KDDW.MDIResizeHandlerHelper {
+            anchors {
+                right: parent ? parent.right : undefined
+                top: parent ? parent.top : undefined
+                bottom: parent ? parent.bottom : undefined
+            }
+
+            width: resizeMargin
+            z: 100
+            groupCpp: root.groupCpp
+            resizeAllowed: root.resizeAllowed && !root.isFixedWidth
+            resizeMargin: root.mouseResizeMargin
+            cursorPosition: KDDockWidgets.CursorPosition_Right
+        }
+
+        KDDW.MDIResizeHandlerHelper {
+            anchors {
+                right: parent ? parent.right : undefined
+                top: parent ? parent.top : undefined
+                left: parent ? parent.left : undefined
+            }
+
+            height: resizeMargin
+            z: 100
+            groupCpp: root.groupCpp
+            resizeAllowed: root.resizeAllowed && !root.isFixedHeight
+            resizeMargin: root.mouseResizeMargin
+            cursorPosition: KDDockWidgets.CursorPosition_Top
+        }
+
+        KDDW.MDIResizeHandlerHelper {
+            anchors {
+                right: parent ? parent.right : undefined
+                left: parent ? parent.left : undefined
+                bottom: parent ?  parent.bottom : undefined
+            }
+
+            height: resizeMargin
+            z: 100
+            groupCpp: root.groupCpp
+            resizeAllowed: root.resizeAllowed && !root.isFixedHeight
+            resizeMargin: root.mouseResizeMargin
+            cursorPosition: KDDockWidgets.CursorPosition_Bottom
+        }
+
+        KDDW.MDIResizeHandlerHelper {
+            anchors {
+                right: parent ? parent.right : undefined
+                bottom: parent ? parent.bottom : undefined
+            }
+
+            height: width
+            width: resizeMargin
+            z: 101
+            groupCpp: root.groupCpp
+            resizeAllowed: root.resizeAllowed
+            resizeMargin: root.mouseResizeMargin
+            cursorPosition: KDDockWidgets.CursorPosition_Bottom | KDDockWidgets.CursorPosition_Right
+        }
+
+        KDDW.MDIResizeHandlerHelper {
+            anchors {
+                left:  parent ? parent.left : undefined
+                top:  parent ? parent.top : undefined
+            }
+
+            height: width
+            width: resizeMargin
+            z: 101
+            groupCpp: root.groupCpp
+            resizeAllowed: root.resizeAllowed
+            resizeMargin: root.mouseResizeMargin
+            cursorPosition: KDDockWidgets.CursorPosition_Top | KDDockWidgets.CursorPosition_Left
+        }
+
+        KDDW.MDIResizeHandlerHelper {
+            anchors {
+                right: parent ? parent.right : undefined
+                top: parent ? parent.top : undefined
+            }
+
+            height: width
+            width: resizeMargin
+            z: 101
+            groupCpp: root.groupCpp
+            resizeAllowed: root.resizeAllowed
+            resizeMargin: root.mouseResizeMargin
+            cursorPosition: KDDockWidgets.CursorPosition_Top | KDDockWidgets.CursorPosition_Right
+        }
+
+        KDDW.MDIResizeHandlerHelper {
+            anchors {
+                left: parent ? parent.left : undefined
+                bottom: parent ? parent.bottom : undefined
+            }
+
+            height: width
+            width: resizeMargin
+            z: 101
+            groupCpp: root.groupCpp
+            resizeAllowed: root.resizeAllowed
+            resizeMargin: root.mouseResizeMargin
+            cursorPosition: KDDockWidgets.CursorPosition_Left | KDDockWidgets.CursorPosition_Bottom
+        }
+    }
+
+    Loader {
+        id: titleBar
+        readonly property QtObject titleBarCpp: root.titleBarCpp
+        source: groupCpp ? _kddw_widgetFactory.titleBarFilename()
+                         : ""
+
+        anchors {
+            top:  parent ? parent.top : undefined
+            left: parent ? parent.left : undefined
+            right: parent ? parent.right : undefined
+            topMargin: root.titleBarContentsMargin
+            leftMargin: root.titleBarContentsMargin
+            rightMargin: root.titleBarContentsMargin
+        }
+    }
+
+    Loader {
+        id: tabbar
+        readonly property QtObject groupCpp: root.groupCpp
+        readonly property bool hasCustomMouseEventRedirector: root.hasCustomMouseEventRedirector
+
+        source: groupCpp ? _kddw_widgetFactory.tabbarFilename()
+                         : ""
+
+        function topAnchor() {
+            if (root.tabsAtTop) {
+                return (titleBar && titleBar.visible) ? titleBar.bottom
+                                                      : (parent ? parent.top : undefined);
+            } else {
+                return undefined;
+            }
+        }
+
+        anchors {
+            left: parent ? parent.left : undefined
+            right: parent ? parent.right : undefined
+            top: topAnchor()
+            bottom: root.tabsAtTop ? undefined : parent.bottom;
+
+            // 1 pixel gap so we don't overlap with outer frame. We shouldn't hardcode this though
+            leftMargin: 1
+            rightMargin: 1
+        }
+    }
+
+    Item {
+        id: stackLayout
+
+        function bottomAnchor() {
+            if (!parent)
+                return undefined;
+
+            if (root.tabsAtTop || !tabbar.visible)
+                return parent.bottom;
+
+            return tabbar.top;
+        }
+
+        anchors {
+            left: parent ? parent.left : undefined
+            right: parent ? parent.right : undefined
+            top: (parent && tabbar.visible && root.tabsAtTop) ? tabbar.bottom : ((titleBar && titleBar.visible) ? titleBar.bottom
+                                                                                                                : parent ? parent.top
+                                                                                                                         : undefined);
+            bottom: bottomAnchor()
+
+            leftMargin: root.contentsMargin
+            rightMargin: root.contentsMargin
+            bottomMargin: root.contentsMargin
+        }
+    }
+}
