@@ -1,19 +1,19 @@
 import QtQuick
 import QtQuick.Window
+import QtQuick.Controls
+import FluentUI.impl
+import FluentUI.Controls
 import "qrc:/kddockwidgets/qtquick/views/qml/" as KDDW
 
 KDDW.TitleBarBase {
-    id: root
-
-    // These two are just for unit-tests
+    id: control
+    FluentUI.theme: Theme.of(control)
+    FluentUI.iconFamily: FluentIcons.fontLoader.name
     readonly property QtObject floatButton: floatButton
     readonly property QtObject closeButton: closeButton
-
-    color: "#eff0f1"
+    color: control.FluentUI.theme.res.micaBackgroundColor
     heightWhenVisible: 30
-
     function dpiSuffix() {
-        // Since Qt's built-in @Nx doesn't support fractionals, we load the correct image manually
         if (Screen.devicePixelRatio === 1) {
             return "";
         } else if (Screen.devicePixelRatio === 1.5) {
@@ -24,14 +24,15 @@ KDDW.TitleBarBase {
             return "";
         }
     }
+    radius: 4
 
     function imagePath(id) {
         return "qrc:/img/" + id + dpiSuffix() + ".png";
     }
 
-    Text {
+    Label {
         id: title
-        text: root.title
+        text: control.title
         anchors {
             left: parent ? parent.left : undefined
             leftMargin: 5
@@ -50,38 +51,99 @@ KDDW.TitleBarBase {
 
         KDDW.TitleBarButton {
             id: minimizeButton
-            visible: root.minimizeButtonVisible
+            visible: control.minimizeButtonVisible
             imageSource: imagePath("min")
             onClicked: {
-                root.minimizeButtonClicked();
+                control.minimizeButtonClicked();
             }
         }
 
-        KDDW.TitleBarButton {
+        // KDDW.TitleBarButton {
+        //     id: floatButton
+        //     visible: control.floatButtonVisible
+        //     imageSource: imagePath("dock-float")
+        //     onClicked: {
+        //         control.floatButtonClicked();
+        //         console.log(dpiSuffix())
+        //     }
+        // }
+        IconButton{
             id: floatButton
-            visible: root.floatButtonVisible
-            imageSource: imagePath("dock-float")
+            property bool hover: hovered
+            implicitWidth: 30
+            implicitHeight: 30
+            radius: 0
+            icon.width: 12
+            visible: control.floatButtonVisible
+            icon.height: 12
+            icon.name: FluentIcons.graph_TaskViewSettings
+            ToolTip.visible: hovered
+            ToolTip.text: qsTr("Float")
+            ToolTip.delay: Theme.tooltipDelay
+            backgroundColor: {
+                if(floatButton.down){
+                    return control.FluentUI.theme.res.subtleFillColorTertiary
+                }
+                if(floatButton.hover){
+                    return control.FluentUI.theme.res.subtleFillColorSecondary
+                }
+                return control.FluentUI.theme.res.subtleFillColorTransparent
+            }
             onClicked: {
-                root.floatButtonClicked();
-                console.log(dpiSuffix())
+                control.floatButtonClicked();
             }
         }
 
-        KDDW.TitleBarButton {
+        IconButton{
             id: maximizeButton
-            visible: root.maximizeButtonVisible
-            imageSource: root.maximizeUsesRestoreIcon ? imagePath("dock-float") : imagePath("max");
+            property bool hover: hovered
+            implicitWidth: 30
+            implicitHeight: 30
+            padding: 0
+            icon.width: 12
+            visible: control.maximizeButtonVisible
+            icon.height: 12
+            icon.name: control.maximizeUsesRestoreIcon ? FluentIcons.graph_ChromeRestore : FluentIcons.graph_ChromeMaximize
+            ToolTip.visible: hovered
+            ToolTip.text: control.maximizeUsesRestoreIcon ? qsTr("Restore") : qsTr("Maximized")
+            ToolTip.delay: Theme.tooltipDelay
+            backgroundColor: {
+                if(maximizeButton.down){
+                    return control.FluentUI.theme.res.subtleFillColorTertiary
+                }
+                if(maximizeButton.hover){
+                    return control.FluentUI.theme.res.subtleFillColorSecondary
+                }
+                return control.FluentUI.theme.res.subtleFillColorTransparent
+            }
             onClicked: {
-                root.maximizeButtonClicked();
+                control.maximizeButtonClicked()
             }
         }
-
-        KDDW.TitleBarButton {
+        IconButton{
             id: closeButton
-            enabled: root.closeButtonEnabled
-            imageSource: imagePath("close")
+            implicitWidth: 30
+            implicitHeight: 30
+            radius: 0
+            icon.width: 10
+            icon.height: 10
+            enabled: control.closeButtonEnabled
+            icon.name: FluentIcons.graph_ChromeClose
+            FluentUI.textColor: closeButton.hovered ? Colors.white : control.FluentUI.theme.res.textFillColorPrimary
+            ToolTip.visible: hovered
+            ToolTip.text: qsTr("Close")
+            ToolTip.delay: Theme.tooltipDelay
+            backgroundColor: {
+                if(closeButton.pressed){
+                    return Colors.red.dark()
+                }
+                if(closeButton.hovered){
+                    return Colors.red.light()
+                }
+                return control.FluentUI.theme.res.subtleFillColorTransparent
+            }
             onClicked: {
-                root.closeButtonClicked();
+                control.closeButtonClicked();
             }
         }
     }

@@ -48,5 +48,4 @@ void FluentUIDock::init(){
     config.setFlags(flags);
     config.setViewFactory(new CustomViewFactory());
     KDDockWidgets::QtQuick::Platform::instance()->setQmlEngine(qmlEngine(this));
-    qDebug()<<"FluentUIDock::init";
 }
