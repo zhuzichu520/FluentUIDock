@@ -11,6 +11,11 @@
 #include <kddockwidgets/core/DockRegistry.h>
 #include <kddockwidgets/qtquick/ViewFactory.h>
 #include <kddockwidgets/qtquick/Platform.h>
+#include <kddockwidgets/qtquick/views/ClassicIndicatorsWindow.h>
+
+using namespace KDDockWidgets;
+using namespace KDDockWidgets::Core;
+using namespace KDDockWidgets::QtQuick;
 
 class CustomViewFactory : public KDDockWidgets::QtQuick::ViewFactory
 {
@@ -32,7 +37,13 @@ public:
         return QUrl(QStringLiteral("qrc:/qt/qml/FluentUIDock/FluentUITabBar.qml"));
     }
     QUrl separatorFilename() const override{
-        return QUrl(QStringLiteral("qrc:/kddockwidgets/qtquick/views/qml/Separator.qml"));
+        return QUrl(QStringLiteral("qrc:/qt/qml/FluentUIDock/FluentUISeparator.qml"));
+    }
+    QUrl rubberBandFilename() const override{
+        return QUrl(QStringLiteral("qrc:/qt/qml/FluentUIDock/FluentUIRubberBand.qml"));
+    }
+    QUrl classicIndicatorsOverlayFilename() const override{
+        return QUrl(QStringLiteral("qrc:/qt/qml/FluentUIDock/ClassicIndicatorsOverlay.qml"));
     }
 };
 
@@ -46,6 +57,7 @@ void FluentUIDock::init(){
     auto &config = KDDockWidgets::Config::self();
     auto flags = config.flags() | KDDockWidgets::Config::Flag_TitleBarIsFocusable;
     config.setFlags(flags);
+    config.setSeparatorThickness(10);
     config.setViewFactory(new CustomViewFactory());
     KDDockWidgets::QtQuick::Platform::instance()->setQmlEngine(qmlEngine(this));
 }

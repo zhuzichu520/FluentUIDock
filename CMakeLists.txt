@@ -33,6 +33,10 @@ set(QML_FILES
     FluentUIFloatingWindow.qml
     FluentUIGroup.qml
     FluentUITabBar.qml
+    FluentUIRubberBand.qml
+    FluentUISeparator.qml
+    ClassicIndicatorsOverlay.qml
+    ClassicIndicator.qml
 )
 
 set(SOURCE_FILES

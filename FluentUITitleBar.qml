@@ -35,7 +35,7 @@ KDDW.TitleBarBase {
         text: control.title
         anchors {
             left: parent ? parent.left : undefined
-            leftMargin: 5
+            leftMargin: 10
             verticalCenter: parent.verticalCenter
         }
     }

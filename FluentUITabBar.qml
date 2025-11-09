@@ -1,9 +1,12 @@
 import QtQuick
 import QtQuick.Controls
+import FluentUI.impl
+import FluentUI.Controls
 import "qrc:/kddockwidgets/qtquick/views/qml/" as KDDW
 
 KDDW.TabBarBase {
     id: control
+    FluentUI.theme: Theme.of(control)
     function getInternalListView() {
         for(var i = 0; i < tabBar.children.length; ++i) {
             if (tabBar.children[i].toString().startsWith("QQuickListView"))
@@ -49,8 +52,9 @@ KDDW.TabBarBase {
     onCurrentTabIndexChanged: {
         tabBar.currentIndex = control.currentTabIndex
     }
-    TabBar {
+    SegmentedControl {
         id: tabBar
+        FluentUI.radius: 0
         width: parent.width
         position: (control.groupCpp && control.groupCpp.tabsAtBottom) ? TabBar.Footer : TabBar.Header
         onCurrentIndexChanged: {
@@ -64,9 +68,10 @@ KDDW.TabBarBase {
         }
         Repeater {
             model: control.groupCpp ? control.groupCpp.tabBar.dockWidgetModel : 0
-            TabButton {
+            SegmentedButton {
                 readonly property int tabIndex: index
                 text: title
+                width: Math.max(Math.min(140,tabBar.width/tabBar.count),48)
             }
         }
     }

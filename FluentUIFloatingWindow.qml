@@ -11,12 +11,14 @@ Rectangle {
     readonly property int titleBarHeight: titleBar.heightWhenVisible
     property int margins: 4
     FluentUI.theme: Theme.of(control)
-    property var accentColor: FluentUI.theme.accentColor
-    anchors.fill: parent
     FluentUI.dark: Theme.dark
+    FluentUI.primaryColor: Theme.primaryColor
+    property var accentColor: FluentUI.theme.accentColor
+    property var primaryColor: accentColor?.defaultBrushFor(control.FluentUI.dark)??"#00000000"
+    anchors.fill: parent
     color: Theme.res.micaBackgroundColor
     border {
-        color: control.accentColor.defaultBrushFor(control.FluentUI.dark)
+        color: control.primaryColor
         width: 2
     }
 
